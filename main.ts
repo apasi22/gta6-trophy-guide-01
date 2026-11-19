@@ -9,7 +9,7 @@
 // MAKEFUN_OUTPUT_DIR stands in for /output:
 //   mkdir -p out && MAKEFUN_OUTPUT_DIR=out node main.ts
 
-import { cpSync, mkdirSync, rmSync, writeFileSync } from 'node:fs';
+import { cpSync, mkdirSync, writeFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { buildDossier } from './vendor/makefun-frontend.ts';
@@ -30,7 +30,9 @@ const dossier = buildDossier(repoRoot, {
 });
 
 // Write a fresh output directory: app/, screenshots/, dossier.json.
-rmSync(outDir, { recursive: true, force: true });
+// Never rmSync(outDir) itself: in the grader /output is a root-owned mount
+// the sandbox user (65534) cannot delete (EACCES). The output directory is
+// always fresh there; mkdirSync + cpSync (overwrite) is enough.
 mkdirSync(outDir, { recursive: true });
 cpSync(join(repoRoot, 'app'), join(outDir, 'app'), { recursive: true });
 cpSync(join(repoRoot, 'screenshots'), join(outDir, 'screenshots'), { recursive: true });
