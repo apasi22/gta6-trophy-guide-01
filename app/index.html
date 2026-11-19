@@ -1,25 +1,97 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>GTA VI trophy checklist</title>
+<title>GTA VI Trophy Guide &amp; Tracker — Leonida Checklist</title>
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
-<header>
-  <h1>GTA VI trophy checklist</h1>
-  <p id="progress">0 of 55 earned</p>
+<header class="hero">
+  <div class="hero-inner">
+    <p class="eyebrow">Grand Theft Auto VI &middot; PlayStation 5 &middot; 55 trophies</p>
+    <h1>GTA VI Trophy Guide &amp; Tracker</h1>
+    <p class="lede">Every trophy, its official description and grade, a guide in plain words with its sources, a roadmap to the platinum, and a checklist that saves your progress on this device. Works fully offline.</p>
+    <div class="progress" role="status" aria-label="Trophy progress">
+      <div class="progress-bar"><span id="progressFill"></span></div>
+      <p class="progress-text"><strong id="earnedCount">0</strong> of <strong>55</strong> earned &middot; <span id="progressPct">0%</span> &middot; <span id="pointsText">0 points</span></p>
+    </div>
+  </div>
 </header>
-<div class="controls">
-  <label>Grade <select id="grade"><option value="all">All</option><option value="platinum">Platinum</option><option value="gold">Gold</option><option value="silver">Silver</option><option value="bronze">Bronze</option></select></label>
-  <button id="export" type="button">Export progress</button>
-  <label class="import">Import progress <input id="import" type="file" accept="application/json"></label>
-</div>
-<table>
-  <thead><tr><th>Earned</th><th>Trophy</th><th>Grade</th><th>How to get it</th></tr></thead>
-  <tbody id="rows"></tbody>
-</table>
+
+<main>
+  <section class="controls" aria-label="Tracker controls">
+    <div class="search-row">
+      <label for="search">Search trophies</label>
+      <input id="search" type="search" placeholder="Search by name, description or guide…" autocomplete="off">
+    </div>
+    <div class="filters" id="filters" role="group" aria-label="Filter trophies">
+      <button data-filter="all" class="active">All 55</button>
+      <button data-filter="story">Story</button>
+      <button data-filter="missable">Missable</button>
+      <button data-filter="collectible">Collectibles</button>
+      <button data-filter="activity">Activities</button>
+      <button data-filter="online">Online</button>
+      <button data-filter="earned">Earned</button>
+      <button data-filter="unearned">Not earned</button>
+    </div>
+    <div class="toggles">
+      <label class="toggle"><input type="checkbox" id="spoilerToggle"> <span>Spoiler-free mode — hide story trophy names &amp; descriptions until earned</span></label>
+      <div class="actions">
+        <button id="exportBtn" type="button">Export progress</button>
+        <label class="import-btn" for="importFile">Import progress</label>
+        <input id="importFile" type="file" accept="application/json,.json" hidden>
+        <button id="resetBtn" type="button">Reset</button>
+      </div>
+    </div>
+    <p class="hint" id="resultCount"></p>
+  </section>
+
+  <section class="list" aria-label="Trophy list">
+    <h2 id="listHeading">All trophies</h2>
+    <div id="trophyList" class="trophy-list"></div>
+    <p id="emptyState" class="empty" hidden>No trophies match this filter. Try another filter or clear the search.</p>
+  </section>
+
+  <section class="roadmap" id="roadmap" aria-label="Roadmap to the platinum">
+    <h2>Roadmap to the platinum</h2>
+    <p class="roadmap-intro">Do the stages in order. The missable trophies are the ones to watch — finish them when they appear, because a named story mission or a stranger finale may not come back.</p>
+    <ol class="stages">
+      <li>
+        <h3>Stage 1 — Story playthrough <span class="stage-count">13 trophies</span></h3>
+        <p>Play Chapters 1–4 and the final mission. Complete every named story mission when it is offered: <em>Gone Fishing</em>, <em>Breakfast Run</em>, <em>The Cartel Heist</em>, <em>Child&rsquo;s Play</em>, <em>Headliners</em>, <em>VCIA Takedown</em> and <em>Operation Savage Glory</em>. These are the missable story trophies — do not skip them.</p>
+      </li>
+      <li>
+        <h3>Stage 2 — Strangers &amp; freaks <span class="stage-count">6 trophies</span></h3>
+        <p>Work through the stranger mission strands (question-mark markers): Andy, Kenton, Billy, Randy and Tyrone, finishing each one&rsquo;s final mission. Completing 8 full strands also earns <em>Strangers &amp; Freaks</em>. Do the finales before the story ends, while the strangers are still available.</p>
+      </li>
+      <li>
+        <h3>Stage 3 — Collectibles &amp; exploration <span class="stage-count">8 trophies</span></h3>
+        <p>Sweep Leonida region by region: meditation spots, card sets, WAiNK It locations, unique-animal hunting for Bret, 100 vehicles, exploring the whole state, all garage properties, and 10 Scooter Bros registrations. Nothing here is missable — it can all be done in free roam.</p>
+      </li>
+      <li>
+        <h3>Stage 4 — Activities &amp; challenges <span class="stage-count">26 trophies</span></h3>
+        <p>Races, drone races, the shooting range, fishing with Cal, arcade games, bowling, stunts, challenges, robberies, Combat Focus and the situational trophies (4-star escape with your partner, 3 shops back-to-back, the airport departure, the showroom smash). Do the situational ones deliberately — they need the right setup, not luck.</p>
+      </li>
+      <li>
+        <h3>Stage 5 — Cleanup &amp; 100% <span class="stage-count">2 trophies</span></h3>
+        <p>Finish whatever the checklist still shows, then check the in-game stats for 100% completion. <em>A Long Road</em> (100%) pops first; the platinum, <em>Vice Got a Price!</em>, follows automatically once the other 54 are earned.</p>
+      </li>
+    </ol>
+    <p class="missable-note"><strong>Missable trophies (22):</strong> the 12 named story missions and stranger finales, plus the situational ones — Hot Together, Retail Therapy, Catch Me If You Can, Sneakthief, A Classic Blitz Play, Capital Offense, Actions Speak Louder, Bad Luck I Guess, The Truth Is Out There and Ten Pin. Use the Missable filter to see them all.</p>
+  </section>
+
+  <section class="about" aria-label="About this guide">
+    <h2>About this guide</h2>
+    <p>Every trophy shows its official name, description and grade exactly as PlayStation publishes them. Each guide is written in our own words for this entry and names its source beside it, so you can check any specific location or step — a cited guide beats an uncited one, however detailed. The guide is a static site: it loads nothing from the network, your progress is saved only in this browser (localStorage), and export/import moves it as a file you own. No Rockstar Games logo, artwork or game screenshot is used anywhere; the look is our own.</p>
+    <p class="sources-note">Sources cited throughout: PowerPyx — GTA 6 Trophy Guide &amp; Roadmap; Exophase — GTA VI Trophies; PSNProfiles — GTA VI Trophies; TrueTrophies — GTA VI Trophies.</p>
+  </section>
+</main>
+
+<footer>
+  <p>An unofficial fan guide. Grand Theft Auto and GTA are trademarks of Take-Two Interactive. Trophy names and descriptions are PlayStation&rsquo;s official list, shown as published.</p>
+</footer>
+
 <script type="module" src="app.js"></script>
 </body>
 </html>
