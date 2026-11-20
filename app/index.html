@@ -46,8 +46,28 @@
     </aside>
 
     <section class="col col-guide" id="featured" aria-label="Featured guide">
-      <h2 id="featuredHeading">Featured guide — do this one first</h2>
-      <div id="featuredCard"></div>
+      <nav class="tabs" role="tablist" aria-label="Guide views">
+        <button type="button" class="tab active" data-tab="tracker" role="tab" aria-selected="true">Tracker</button>
+        <button type="button" class="tab" data-tab="roadmap" role="tab" aria-selected="false">Roadmap</button>
+        <button type="button" class="tab" data-tab="missables" role="tab" aria-selected="false">Missables</button>
+        <button type="button" class="tab" data-tab="sources" role="tab" aria-selected="false">Sources</button>
+      </nav>
+      <div id="tabTracker" class="tab-panel">
+        <h2 id="featuredHeading">Featured guide — do this one first</h2>
+        <div id="featuredCard"></div>
+      </div>
+      <div id="tabRoadmap" class="tab-panel" hidden>
+        <h2>Roadmap to the platinum</h2>
+        <div id="roadmapTab"></div>
+      </div>
+      <div id="tabMissables" class="tab-panel" hidden>
+        <h2>Missables — what can be missed</h2>
+        <div id="missablesTab"></div>
+      </div>
+      <div id="tabSources" class="tab-panel" hidden>
+        <h2>Sources — every guide cites its sources</h2>
+        <div id="sourcesTab"></div>
+      </div>
     </section>
 
     <aside class="col col-sources" id="sourcesPanel" aria-label="Sources">

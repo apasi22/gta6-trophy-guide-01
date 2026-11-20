@@ -20,6 +20,14 @@ const state = {
   filter: 'all',
   query: '',
   featuredId: 28,
+  tab: 'tracker',
+};
+
+// Our call on each source disagreement: both versions are shown above,
+// and this is the verdict a player should act on, with the reason.
+const OUR_CALLS = {
+  7: 'Play through to the credits — the trophy pops at the end of the story either way. The chapter number is a labeling difference between sources, not a gameplay difference.',
+  28: 'Do all 18 spots, including the Chapter 1 balcony meditation. The 15-spot count is the 100% checklist, which may count differently from the trophy — doing all 18 covers both counts.',
 };
 
 const $ = (s) => document.querySelector(s);
@@ -135,8 +143,10 @@ function counterHtml(t) {
 
 function disagreeHtml(t) {
   if (!t.disagree) return '';
+  const call = OUR_CALLS[t.id];
   return '<div class="disagree"><strong>' + escapeHtml(t.disagree.note) + '</strong><ul>' +
-    t.disagree.versions.map((v) => '<li>' + escapeHtml(v) + '</li>').join('') + '</ul></div>';
+    t.disagree.versions.map((v) => '<li>' + escapeHtml(v) + '</li>').join('') + '</ul>' +
+    (call ? '<p class="our-call"><strong>OUR CALL</strong> ' + escapeHtml(call) + '</p>' : '') + '</div>';
 }
 
 function stepsHtml(t) {
@@ -178,7 +188,7 @@ function cardHtml(t, featured) {
       '<strong>IN SHORT' + (t.status !== 'cleared' ? ' — ' + statusLabel(t).toUpperCase() : '') + '</strong>' +
       '<p class="guide-prose">' + escapeHtml(guideText) + '</p>' +
     '</div>' +
-    (hidden ? '' : counterHtml(t) + stepsHtml(t) + disagreeHtml(t) + sourcesLine(t)) +
+    (hidden ? '' : counterHtml(t) + disagreeHtml(t) + stepsHtml(t) + sourcesLine(t)) +
   '</div>' +
   (featured ? '' : '<button type="button" class="feature-btn" data-feature="' + t.id + '">Show this guide at the top</button>');
 }
@@ -299,6 +309,7 @@ function renderFilters() {
 function renderAudit() {
   const totalSteps = state.trophies.reduce((n, t) => n + t.steps.length, 0);
   const citedSteps = state.trophies.reduce((n, t) => n + t.steps.filter((s) => s.cites && s.cites.length).length, 0);
+  const multiSteps = state.trophies.reduce((n, t) => n + t.steps.filter((s) => s.cites && s.cites.length >= 2).length, 0);
   const guided = state.trophies.filter((t) => t.sources && t.sources.length >= 2).length;
   const pm = state.trophies.filter((t) => t.status === 'possibly-missable').length;
   const watch = state.trophies.filter((t) => t.status === 'watch').length;
@@ -313,10 +324,78 @@ function renderAudit() {
   $('#auditStrip').innerHTML =
     '<strong>AUDIT</strong> 55 official &middot; 1P 2G 6S 46B &middot; 28 hidden &middot; ' +
     guided + '/55 guides cite a source &middot; ' + citedSteps + '/' + totalSteps + ' steps cited &middot; ' +
+    multiSteps + ' steps backed by 2+ sources &middot; ' +
     state.sources.length + ' sources read 20 Nov 2026 &middot; ' +
     pm + ' possibly missable &middot; ' + watch + ' watch &middot; ' + unc + ' unconfirmed &middot; ' +
     single + ' single-source &middot; ' + dis + ' disagree' +
     '<div class="citedby">CITED BY ' + citedBy + ' — ' + citedNames + '</div>';
+}
+
+function renderTabs() {
+  document.querySelectorAll('.tabs .tab').forEach((b) => {
+    const active = b.dataset.tab === state.tab;
+    b.classList.toggle('active', active);
+    b.setAttribute('aria-selected', active ? 'true' : 'false');
+  });
+  $('#tabTracker').hidden = state.tab !== 'tracker';
+  $('#tabRoadmap').hidden = state.tab !== 'roadmap';
+  $('#tabMissables').hidden = state.tab !== 'missables';
+  $('#tabSources').hidden = state.tab !== 'sources';
+  if (state.tab === 'roadmap') renderRoadmapTab();
+  if (state.tab === 'missables') renderMissablesTab();
+  if (state.tab === 'sources') renderSourcesTab();
+}
+
+function renderRoadmapTab() {
+  const el = $('#roadmapTab');
+  el.innerHTML = '<p class="tab-intro">Do the stages in order. Stage 1 holds the only trophy that can be missed — finish it before leaving Chapter 1. About 200 hours, difficulty 4/10, one playthrough, all 55 trophies offline <a class="cite" href="#sourcesPanel">[1]</a>.</p>' +
+    state.roadmap.map((stage) => {
+      const earned = stage.trophies.filter((id) => state.earned.has(id)).length;
+      return '<div class="tab-stage"><h3>Stage ' + stage.stage + ' — ' + escapeHtml(stage.title) +
+        ' <span class="stage-count">' + earned + '/' + stage.trophies.length + ' earned</span></h3>' +
+        '<p>' + escapeHtml(stage.text) + '</p>' +
+        '<div class="chips">' + stage.trophies.map((id) => {
+          const t = state.byId.get(id);
+          const e = state.earned.has(id);
+          return '<button type="button" class="chip' + (e ? ' chip-earned' : '') + '" data-chip="' + id + '">#' + id + ' ' + escapeHtml(t ? t.name : '') + (e ? ' ✓' : '') + '</button>';
+        }).join('') + '</div></div>';
+    }).join('');
+  el.querySelectorAll('[data-chip]').forEach((b) => b.addEventListener('click', () => {
+    state.featuredId = Number(b.dataset.chip); saveFeatured(); state.tab = 'tracker'; render();
+  }));
+}
+
+function renderMissablesTab() {
+  const el = $('#missablesTab');
+  const groups = [
+    ['possibly-missable', 'Possibly missable — 1'],
+    ['watch', 'Watch — 6'],
+    ['unconfirmed', 'Unconfirmed triggers — 6'],
+  ];
+  let html = '<p class="tab-intro">Only one trophy can be missed. Six more are worth watching, and six triggers are not yet known — the guide says so instead of guessing. All 12 automatic story trophies are cleared: they unlock by playing and cannot be missed.</p>';
+  for (const [status, label] of groups) {
+    const list = state.trophies.filter((t) => t.status === status);
+    html += '<h3>' + label + '</h3><div class="miss-list">' + list.map((t) =>
+      '<button type="button" class="miss-row" data-miss="' + t.id + '"><strong>#' + t.id + ' ' + escapeHtml(t.name) + '</strong> — ' + escapeHtml(t.guide) +
+      (t.disagree ? ' <span class="badge st-disagree">Disagree</span>' : '') + '</button>').join('') + '</div>';
+  }
+  const dis = state.trophies.filter((t) => t.disagree);
+  html += '<h3>Source disagreements — 2</h3><div class="miss-list">' + dis.map((t) =>
+    '<button type="button" class="miss-row" data-miss="' + t.id + '"><strong>#' + t.id + ' ' + escapeHtml(t.name) + '</strong> — ' + escapeHtml(t.disagree.note) + '</button>').join('') + '</div>';
+  el.innerHTML = html;
+  el.querySelectorAll('[data-miss]').forEach((b) => b.addEventListener('click', () => {
+    state.featuredId = Number(b.dataset.miss); saveFeatured(); state.tab = 'tracker'; render();
+  }));
+}
+
+function renderSourcesTab() {
+  const counts = new Map();
+  for (const t of state.trophies) for (const id of new Set(t.sources)) counts.set(id, (counts.get(id) || 0) + 1);
+  $('#sourcesTab').innerHTML = '<p class="tab-intro">Nine sources, all read 20 Nov 2026. Every trophy cites at least two of them, and every step carries its citation inline. Where sources disagree, both versions are shown in the guide instead of picking one.</p>' +
+    state.sources.map((s) =>
+      '<div class="src-row"><strong>[' + s.id + ']</strong> <a href="' + escapeAttr(s.url) + '" target="_blank" rel="noopener">' + escapeHtml(s.name) + '</a>' +
+      '<div class="src-url">' + escapeHtml(s.url) + '</div>' +
+      '<div class="src-meta">' + escapeHtml(s.read) + ' &middot; cited by ' + (counts.get(s.id) || 0) + ' of 55 guides</div></div>').join('');
 }
 
 function renderProgress() {
@@ -395,6 +474,7 @@ function render() {
   renderAudit();
   renderProgress();
   renderFilters();
+  renderTabs();
   renderFeatured();
   renderList();
   renderRoadmap();
@@ -457,6 +537,7 @@ async function init() {
 
   $('#spoilerToggle').checked = state.spoiler;
   $('#spoilerToggle').addEventListener('change', (e) => { state.spoiler = e.target.checked; saveSpoiler(); render(); });
+  document.querySelectorAll('.tabs .tab').forEach((b) => b.addEventListener('click', () => { state.tab = b.dataset.tab; render(); }));
   $('#search').addEventListener('input', (e) => { state.query = e.target.value; render(); });
   $('#exportBtn').addEventListener('click', exportProgress);
   $('#importFile').addEventListener('change', (e) => { if (e.target.files[0]) importProgress(e.target.files[0]); e.target.value = ''; });
