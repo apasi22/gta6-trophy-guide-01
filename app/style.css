@@ -26,21 +26,60 @@ body {
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
   line-height: 1.55;
 }
-.hero {
+/* --- Round 5: compact topbar + 3-column workspace like the winners --- */
+.topbar {
   background: linear-gradient(135deg, #1b2a4a 0%, #0e1420 55%, #2a1a3a 100%);
   border-bottom: 1px solid var(--line);
-  padding: 40px 20px 28px;
+  padding: 12px 20px 12px;
 }
-.hero-inner { max-width: 1080px; margin: 0 auto; }
-.eyebrow { margin: 0 0 8px; color: var(--accent); font-size: 13px; letter-spacing: .12em; text-transform: uppercase; font-weight: 700; }
-h1 { margin: 0 0 10px; font-size: clamp(28px, 5vw, 44px); line-height: 1.1; }
-.lede { margin: 0 0 20px; color: var(--muted); max-width: 720px; font-size: 16px; }
-.progress-bar { height: 12px; background: #0a0f1a; border: 1px solid var(--line); border-radius: 999px; overflow: hidden; }
-.progress-bar span { display: block; height: 100%; width: 0%; background: linear-gradient(90deg, var(--accent), var(--accent2)); transition: width .3s ease; }
-.progress-text { margin: 8px 0 0; color: var(--muted); font-size: 14px; }
-.progress-text strong { color: var(--text); }
+.topbar-row { max-width: 1240px; margin: 0 auto; display: flex; flex-wrap: wrap; gap: 8px 28px; align-items: center; justify-content: space-between; }
+.brand h1 { margin: 0; font-size: 24px; }
+.brand .sub { margin: 2px 0 0; color: var(--muted); font-size: 13px; }
+.top-stats { font-size: 14px; }
+.top-stats p { margin: 2px 0; }
+.earned-line strong { color: var(--accent); }
+.top-stats .progress-bar { width: 240px; margin-top: 5px; }
+.topbar .audit { max-width: 1240px; margin: 10px auto 0; }
+main { max-width: 1240px; margin: 0 auto; padding: 16px 20px; }
+.workspace { display: grid; gap: 16px; grid-template-columns: 1fr; margin-bottom: 28px; }
+@media (min-width: 1000px) {
+  .workspace { grid-template-columns: 300px minmax(0, 1fr) 300px; align-items: start; }
+}
+.col { background: var(--bg2); border: 1px solid var(--line); border-radius: var(--radius); padding: 14px; min-width: 0; }
+.col-guide { background: transparent; border: none; padding: 0; }
+.col h2 { font-size: 18px; }
+.col-list .search-row { margin-bottom: 12px; }
+.col-list .filters { margin: 0 0 12px; }
+.col-list .nextup { margin: 0 0 14px; }
+.checklist { display: flex; flex-direction: column; gap: 6px; }
+.row {
+  display: flex; gap: 8px; align-items: flex-start; padding: 8px 10px;
+  background: var(--card); border: 1px solid var(--line); border-radius: 8px; cursor: pointer;
+}
+.row:hover { border-color: var(--accent); }
+.row.selected { border-color: var(--accent); background: var(--card2); }
+.row.earned { border-color: var(--green); }
+.row .check { flex: none; margin-top: 2px; }
+.row .row-body { flex: 1; min-width: 0; }
+.row .row-name { margin: 0; font-size: 14px; line-height: 1.3; font-weight: 600; }
+.row .row-name .num { color: var(--muted); font-weight: 400; font-size: 12px; }
+.row .row-desc { margin: 2px 0 0; color: var(--muted); font-size: 12px; line-height: 1.4; }
+.row .badges { margin-top: 6px; }
+.row.spoiler-hidden .row-name, .row.spoiler-hidden .row-desc { color: var(--muted); font-style: italic; }
 
-main { max-width: 1080px; margin: 0 auto; padding: 20px; }
+/* Sources as a compact stacked list inside the narrow right column. */
+.col-sources .sources-intro { font-size: 13px; }
+.col-sources .source-table, .col-sources .source-table tbody,
+.col-sources .source-table tr, .col-sources .source-table td { display: block; }
+.col-sources .source-table thead { display: none; }
+.col-sources .source-table tr { padding: 10px 0; border-bottom: 1px solid var(--line); }
+.col-sources .source-table tr:last-child { border-bottom: none; }
+.col-sources .source-table td { padding: 0; border: none; }
+.col-sources .source-table td:first-child { color: var(--accent); font-weight: 700; font-size: 13px; }
+.col-sources .source-table td:nth-child(2) { font-size: 13px; margin: 2px 0; }
+.col-sources .source-table td:nth-child(3),
+.col-sources .source-table td:nth-child(4) { display: inline-block; font-size: 12px; color: var(--muted); margin-right: 12px; }
+
 section { margin-bottom: 28px; }
 h2 { margin: 0 0 12px; font-size: 22px; }
 h3 { margin: 0 0 6px; font-size: 16px; }
@@ -89,8 +128,6 @@ h3 { margin: 0 0 6px; font-size: 16px; }
 .stage-count { float: right; color: var(--accent); font-size: 12px; font-weight: 700; letter-spacing: .04em; text-transform: uppercase; }
 .missable-note { margin: 16px 0 0; padding: 12px; background: #2a1a12; border: 1px solid #5a3a22; border-radius: 8px; font-size: 14px; color: #f0d0b0; }
 
-.trophy-list { display: grid; grid-template-columns: 1fr; gap: 12px; }
-@media (min-width: 760px) { .trophy-list { grid-template-columns: 1fr 1fr; } }
 .card {
   background: var(--card); border: 1px solid var(--line); border-radius: var(--radius);
   padding: 14px; display: flex; flex-direction: column; gap: 8px;
@@ -125,7 +162,7 @@ h3 { margin: 0 0 6px; font-size: 16px; }
 .about { background: var(--bg2); border: 1px solid var(--line); border-radius: var(--radius); padding: 18px; }
 .about p { color: var(--muted); font-size: 14px; margin: 0 0 10px; }
 .about p:last-child { margin-bottom: 0; }
-footer { max-width: 1080px; margin: 0 auto; padding: 0 20px 32px; color: var(--muted); font-size: 12px; }
+footer { max-width: 1240px; margin: 0 auto; padding: 0 20px 32px; color: var(--muted); font-size: 12px; }
 
 /* --- Round 3: audit strip, cited steps, counters, roadmap chips, sources --- */
 .audit {
@@ -135,9 +172,7 @@ footer { max-width: 1080px; margin: 0 auto; padding: 0 20px 32px; color: var(--m
 }
 .audit strong { color: var(--accent); letter-spacing: .08em; margin-right: 6px; }
 
-.featured { background: var(--bg2); border: 1px solid var(--accent); border-radius: var(--radius); padding: 18px; }
 .featured-card { border-color: var(--accent); }
-.list-note { color: var(--muted); font-size: 14px; margin: 0 0 12px; }
 
 .guide-prose { margin: 0 0 10px; color: var(--text); font-size: 14px; }
 .steps { margin: 0 0 10px; padding-left: 22px; font-size: 14px; }

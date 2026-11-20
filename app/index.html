@@ -7,61 +7,60 @@
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
-<header class="hero">
-  <div class="hero-inner">
-    <p class="eyebrow">Grand Theft Auto VI &middot; PlayStation 5 &middot; 55 trophies</p>
-    <h1>GTA VI Trophy Guide &amp; Tracker</h1>
-    <p class="lede">Every trophy, its official description and grade, a numbered step-by-step guide with a citation on every step, a roadmap to the platinum, and a checklist that saves your progress on this device. Works fully offline.</p>
-    <div class="audit" id="auditStrip" role="status" aria-label="Guide audit"></div>
-    <div class="progress" role="status" aria-label="Trophy progress">
+<header class="topbar">
+  <div class="topbar-row">
+    <div class="brand">
+      <h1>GTA VI Trophy Guide &amp; Tracker</h1>
+      <p class="sub">Grand Theft Auto VI &middot; PlayStation 5 &middot; 55 trophies &middot; every guide in numbered steps, every step cited &middot; works fully offline</p>
+    </div>
+    <div class="top-stats">
+      <p class="earned-line"><strong id="earnedCount">0</strong> of <strong>55</strong> earned &middot; <span id="progressPct">0%</span> &middot; <span id="pointsText">0 points</span> &middot; <span id="gradeProgress">P 0/1 &middot; G 0/2 &middot; S 0/6 &middot; B 0/46</span></p>
       <div class="progress-bar"><span id="progressFill"></span></div>
-      <p class="progress-text"><strong id="earnedCount">0</strong> of <strong>55</strong> earned &middot; <span id="progressPct">0%</span> &middot; <span id="pointsText">0 points</span> &middot; <span id="gradeProgress">P 0/1 &middot; G 0/2 &middot; S 0/6 &middot; B 0/46</span></p>
+    </div>
+    <div class="actions">
+      <button id="exportBtn" type="button">Export progress</button>
+      <label class="import-btn" for="importFile">Import progress</label>
+      <input id="importFile" type="file" accept="application/json,.json" hidden>
+      <button id="resetBtn" type="button">Reset</button>
+      <label class="toggle"><input type="checkbox" id="spoilerToggle"> <span>Spoiler-free</span></label>
     </div>
   </div>
+  <div class="audit" id="auditStrip" role="status" aria-label="Guide audit"></div>
 </header>
 
 <main>
-  <section class="featured" id="featured" aria-label="Featured guide">
-    <h2 id="featuredHeading">Featured guide — do this one first</h2>
-    <div id="featuredCard"></div>
-  </section>
-
-  <section class="controls" aria-label="Tracker controls">
-    <div class="search-row">
-      <label for="search">Search trophies</label>
-      <input id="search" type="search" placeholder="Search by name, description or guide…" autocomplete="off">
-    </div>
-    <div class="filters" id="filters" role="group" aria-label="Filter trophies"></div>
-    <div class="toggles">
-      <label class="toggle"><input type="checkbox" id="spoilerToggle"> <span>Spoiler-free mode — hide story trophy names &amp; descriptions until earned</span></label>
-      <div class="actions">
-        <button id="exportBtn" type="button">Export progress</button>
-        <label class="import-btn" for="importFile">Import progress</label>
-        <input id="importFile" type="file" accept="application/json,.json" hidden>
-        <button id="resetBtn" type="button">Reset</button>
+  <div class="workspace">
+    <aside class="col col-list" aria-label="Trophy checklist">
+      <div class="search-row">
+        <label for="search">Search trophies</label>
+        <input id="search" type="search" placeholder="Search by name or guide…" autocomplete="off">
       </div>
-    </div>
-    <p class="hint" id="resultCount"></p>
-  </section>
+      <div class="filters" id="filters" role="group" aria-label="Filter trophies"></div>
+      <div class="nextup" id="nextUp"></div>
+      <section class="list" aria-label="Trophy list">
+        <h2 id="listHeading">All trophies</h2>
+        <p class="hint" id="resultCount"></p>
+        <div id="trophyList" class="checklist"></div>
+        <p id="emptyState" class="empty" hidden>No trophies match this filter. Try another filter or clear the search.</p>
+      </section>
+    </aside>
 
-  <section class="list" aria-label="Trophy list">
-    <h2 id="listHeading">All trophies</h2>
-    <p class="list-note">Every guide below shows its numbered steps with citations — nothing is hidden behind a collapsed section.</p>
-    <div id="trophyList" class="trophy-list"></div>
-    <p id="emptyState" class="empty" hidden>No trophies match this filter. Try another filter or clear the search.</p>
-  </section>
+    <section class="col col-guide" id="featured" aria-label="Featured guide">
+      <h2 id="featuredHeading">Featured guide — do this one first</h2>
+      <div id="featuredCard"></div>
+    </section>
+
+    <aside class="col col-sources" id="sourcesPanel" aria-label="Sources">
+      <h2>Sources — every guide cites its sources</h2>
+      <p class="sources-intro">Nine sources, all read 20 Nov 2026. Every trophy cites at least two of them, and every step carries its citation inline. Where sources disagree, both versions are shown in the guide instead of picking one.</p>
+      <div id="sourcesList"></div>
+    </aside>
+  </div>
 
   <section class="roadmap" id="roadmap" aria-label="Roadmap to the platinum">
     <h2>Roadmap to the platinum</h2>
     <p class="roadmap-intro">Do the stages in order. Stage 1 holds the only trophy that can be missed — finish it before leaving Chapter 1. Everything else can be done after the story. About 200 hours, difficulty 4/10, one playthrough, all 55 trophies offline <a class="cite" href="#sourcesPanel">[1]</a>.</p>
-    <div class="nextup" id="nextUp"></div>
     <ol class="stages" id="stages"></ol>
-  </section>
-
-  <section class="sources-panel" id="sourcesPanel" aria-label="Sources">
-    <h2>Sources — every guide cites its sources</h2>
-    <p class="sources-intro">Nine sources, all read 20 Nov 2026. Every trophy cites at least two of them, and every step carries its citation inline. Where sources disagree, both versions are shown in the guide instead of picking one.</p>
-    <div id="sourcesList"></div>
   </section>
 
   <section class="about" aria-label="About this guide">

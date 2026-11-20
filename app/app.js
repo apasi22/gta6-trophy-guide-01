@@ -178,7 +178,7 @@ function cardHtml(t, featured) {
       '<strong>IN SHORT' + (t.status !== 'cleared' ? ' — ' + statusLabel(t).toUpperCase() : '') + '</strong>' +
       '<p class="guide-prose">' + escapeHtml(guideText) + '</p>' +
     '</div>' +
-    (hidden ? '' : stepsHtml(t) + disagreeHtml(t) + counterHtml(t) + sourcesLine(t)) +
+    (hidden ? '' : counterHtml(t) + stepsHtml(t) + disagreeHtml(t) + sourcesLine(t)) +
   '</div>' +
   (featured ? '' : '<button type="button" class="feature-btn" data-feature="' + t.id + '">Show this guide at the top</button>');
 }
@@ -201,28 +201,48 @@ function renderFeatured() {
   $('#featuredHeading').textContent = 'Featured guide — #' + t.id + ' ' + t.name;
 }
 
+function rowHtml(t) {
+  const earned = state.earned.has(t.id);
+  const hidden = isSpoilerHidden(t);
+  const name = hidden ? 'Hidden Trophy' : t.name;
+  const desc = hidden ? 'Hidden until earned.' : t.description;
+  const statusBadge = t.status !== 'cleared'
+    ? '<span class="badge ' + statusClass(t) + '">' + statusLabel(t) + '</span>' : '';
+  const disagreeBadge = t.disagree ? '<span class="badge st-disagree">Disagree</span>' : '';
+  return '<label class="check"><input type="checkbox" ' + (earned ? 'checked' : '') + ' aria-label="Mark ' + escapeAttr(name) + ' as earned"></label>' +
+    '<div class="row-body">' +
+      '<p class="row-name"><span class="num">#' + t.id + '</span> ' + escapeHtml(name) + '</p>' +
+      '<p class="row-desc">' + escapeHtml(desc) + '</p>' +
+      '<div class="badges">' +
+        '<span class="badge ' + t.grade + '">' + gradeLabel(t) + '</span>' +
+        '<span class="badge">' + kindLabel(t) + '</span>' +
+        statusBadge + disagreeBadge +
+        (t.hidden && !hidden ? '<span class="badge hidden-flag">Hidden</span>' : '') +
+      '</div>' +
+    '</div>';
+}
+
 function renderList() {
   const shown = state.trophies.filter(matches);
   listEl.innerHTML = '';
   for (const t of shown) {
     const earned = state.earned.has(t.id);
     const hidden = isSpoilerHidden(t);
-    const card = document.createElement('article');
-    card.className = 'card' + (earned ? ' earned' : '') + (hidden ? ' spoiler-hidden' : '');
-    card.dataset.id = t.id;
-    card.id = 'card-' + t.id;
-    card.innerHTML = cardHtml(t, false);
-    card.querySelector('input').addEventListener('change', (e) => {
+    const row = document.createElement('article');
+    row.className = 'row' + (earned ? ' earned' : '') + (hidden ? ' spoiler-hidden' : '') + (t.id === state.featuredId ? ' selected' : '');
+    row.dataset.id = t.id;
+    row.id = 'card-' + t.id;
+    row.innerHTML = rowHtml(t);
+    row.querySelector('input').addEventListener('change', (e) => {
       if (e.target.checked) state.earned.add(t.id); else state.earned.delete(t.id);
       saveStore(); render();
     });
-    const fb = card.querySelector('[data-feature]');
-    if (fb) fb.addEventListener('click', () => {
+    row.addEventListener('click', (e) => {
+      if (e.target.closest('input')) return;
       state.featuredId = t.id; saveFeatured(); renderFeatured();
-      $('#featured').scrollIntoView({ block: 'start' });
+      document.querySelectorAll('#trophyList .row').forEach((r) => r.classList.toggle('selected', Number(r.dataset.id) === t.id));
     });
-    bindCounters(card);
-    listEl.appendChild(card);
+    listEl.appendChild(row);
   }
   emptyEl.hidden = shown.length !== 0;
   const names = { all: 'All trophies', story: 'Story trophies', 'possibly-missable': 'Possibly missable', watch: 'Watch list', unconfirmed: 'Unconfirmed triggers', disagree: 'Source disagreements', collectible: 'Collectibles', activity: 'Activities', earned: 'Earned trophies', unearned: 'Trophies not earned yet' };
