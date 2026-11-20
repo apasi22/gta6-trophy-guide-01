@@ -122,12 +122,14 @@ function counterHtml(t) {
   if (!t.counter) return '';
   const n = state.counters.get(t.id) || 0;
   const done = n >= t.counter.target;
+  const pct = Math.min(100, Math.round((n / t.counter.target) * 100));
   return '<div class="counter" data-counter="' + t.id + '">' +
     '<span class="counter-label">YOUR COUNT</span>' +
     '<button type="button" class="counter-btn" data-dec="' + t.id + '" aria-label="Decrease count">&minus;</button>' +
     '<strong class="counter-value">' + n + ' / ' + t.counter.target + ' ' + escapeHtml(t.counter.label) + '</strong>' +
     '<button type="button" class="counter-btn" data-inc="' + t.id + '" aria-label="Increase count">+</button>' +
     (done ? '<span class="counter-done">Target reached — mark it earned above.</span>' : '') +
+    '<span class="counter-bar"><span style="width:' + pct + '%"></span></span>' +
   '</div>';
 }
 
@@ -172,7 +174,10 @@ function cardHtml(t, featured) {
     '</div>' +
   '</div>' +
   '<div class="guide">' +
-    '<p class="guide-prose">' + escapeHtml(guideText) + '</p>' +
+    '<div class="inshort' + (t.status !== 'cleared' ? ' inshort-' + t.status : '') + '">' +
+      '<strong>IN SHORT' + (t.status !== 'cleared' ? ' — ' + statusLabel(t).toUpperCase() : '') + '</strong>' +
+      '<p class="guide-prose">' + escapeHtml(guideText) + '</p>' +
+    '</div>' +
     (hidden ? '' : stepsHtml(t) + disagreeHtml(t) + counterHtml(t) + sourcesLine(t)) +
   '</div>' +
   (featured ? '' : '<button type="button" class="feature-btn" data-feature="' + t.id + '">Show this guide at the top</button>');
@@ -280,12 +285,18 @@ function renderAudit() {
   const unc = state.trophies.filter((t) => t.status === 'unconfirmed').length;
   const single = state.trophies.filter((t) => t.sources.length < 2).length;
   const dis = state.trophies.filter((t) => t.disagree).length;
+  const citedBy = state.sources.map((s) => {
+    const n = state.trophies.filter((t) => t.sources.includes(s.id)).length;
+    return '[' + s.id + '] ' + n + '/55';
+  }).join(' &middot; ');
+  const citedNames = state.sources.map((s) => '[' + s.id + '] ' + escapeHtml(s.name.split(' — ')[0])).join(' &middot; ');
   $('#auditStrip').innerHTML =
     '<strong>AUDIT</strong> 55 official &middot; 1P 2G 6S 46B &middot; 28 hidden &middot; ' +
     guided + '/55 guides cite a source &middot; ' + citedSteps + '/' + totalSteps + ' steps cited &middot; ' +
     state.sources.length + ' sources read 20 Nov 2026 &middot; ' +
     pm + ' possibly missable &middot; ' + watch + ' watch &middot; ' + unc + ' unconfirmed &middot; ' +
-    single + ' single-source &middot; ' + dis + ' disagree';
+    single + ' single-source &middot; ' + dis + ' disagree' +
+    '<div class="citedby">CITED BY ' + citedBy + ' — ' + citedNames + '</div>';
 }
 
 function renderProgress() {
@@ -355,7 +366,7 @@ function renderSources() {
   const el = $('#sourcesList');
   el.innerHTML = '<table class="source-table"><thead><tr><th>#</th><th>Source</th><th>Read</th><th>Cited by</th></tr></thead><tbody>' +
     state.sources.map((s) =>
-      '<tr><td>[' + s.id + ']</td><td><a href="' + escapeAttr(s.url) + '" target="_blank" rel="noopener">' + escapeHtml(s.name) + '</a></td>' +
+      '<tr><td>[' + s.id + ']</td><td><a href="' + escapeAttr(s.url) + '" target="_blank" rel="noopener">' + escapeHtml(s.name) + '</a><div class="src-url">' + escapeHtml(s.url) + '</div></td>' +
       '<td>' + escapeHtml(s.read) + '</td><td>' + (counts.get(s.id) || 0) + ' of 55 guides</td></tr>').join('') +
     '</tbody></table>';
 }
