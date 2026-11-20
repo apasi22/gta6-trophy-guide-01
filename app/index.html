@@ -11,30 +11,27 @@
   <div class="hero-inner">
     <p class="eyebrow">Grand Theft Auto VI &middot; PlayStation 5 &middot; 55 trophies</p>
     <h1>GTA VI Trophy Guide &amp; Tracker</h1>
-    <p class="lede">Every trophy, its official description and grade, a guide in plain words with its sources, a roadmap to the platinum, and a checklist that saves your progress on this device. Works fully offline.</p>
+    <p class="lede">Every trophy, its official description and grade, a numbered step-by-step guide with a citation on every step, a roadmap to the platinum, and a checklist that saves your progress on this device. Works fully offline.</p>
+    <div class="audit" id="auditStrip" role="status" aria-label="Guide audit"></div>
     <div class="progress" role="status" aria-label="Trophy progress">
       <div class="progress-bar"><span id="progressFill"></span></div>
-      <p class="progress-text"><strong id="earnedCount">0</strong> of <strong>55</strong> earned &middot; <span id="progressPct">0%</span> &middot; <span id="pointsText">0 points</span></p>
+      <p class="progress-text"><strong id="earnedCount">0</strong> of <strong>55</strong> earned &middot; <span id="progressPct">0%</span> &middot; <span id="pointsText">0 points</span> &middot; <span id="gradeProgress">P 0/1 &middot; G 0/2 &middot; S 0/6 &middot; B 0/46</span></p>
     </div>
   </div>
 </header>
 
 <main>
+  <section class="featured" id="featured" aria-label="Featured guide">
+    <h2 id="featuredHeading">Featured guide — do this one first</h2>
+    <div id="featuredCard"></div>
+  </section>
+
   <section class="controls" aria-label="Tracker controls">
     <div class="search-row">
       <label for="search">Search trophies</label>
       <input id="search" type="search" placeholder="Search by name, description or guide…" autocomplete="off">
     </div>
-    <div class="filters" id="filters" role="group" aria-label="Filter trophies">
-      <button data-filter="all" class="active">All 55</button>
-      <button data-filter="story">Story</button>
-      <button data-filter="missable">Missable</button>
-      <button data-filter="collectible">Collectibles</button>
-      <button data-filter="activity">Activities</button>
-      <button data-filter="online">Online</button>
-      <button data-filter="earned">Earned</button>
-      <button data-filter="unearned">Not earned</button>
-    </div>
+    <div class="filters" id="filters" role="group" aria-label="Filter trophies"></div>
     <div class="toggles">
       <label class="toggle"><input type="checkbox" id="spoilerToggle"> <span>Spoiler-free mode — hide story trophy names &amp; descriptions until earned</span></label>
       <div class="actions">
@@ -49,42 +46,28 @@
 
   <section class="list" aria-label="Trophy list">
     <h2 id="listHeading">All trophies</h2>
+    <p class="list-note">Every guide below shows its numbered steps with citations — nothing is hidden behind a collapsed section.</p>
     <div id="trophyList" class="trophy-list"></div>
     <p id="emptyState" class="empty" hidden>No trophies match this filter. Try another filter or clear the search.</p>
   </section>
 
   <section class="roadmap" id="roadmap" aria-label="Roadmap to the platinum">
     <h2>Roadmap to the platinum</h2>
-    <p class="roadmap-intro">Do the stages in order. The missable trophies are the ones to watch — finish them when they appear, because a named story mission or a stranger finale may not come back.</p>
-    <ol class="stages">
-      <li>
-        <h3>Stage 1 — Story playthrough <span class="stage-count">13 trophies</span></h3>
-        <p>Play Chapters 1–4 and the final mission. Complete every named story mission when it is offered: <em>Gone Fishing</em>, <em>Breakfast Run</em>, <em>The Cartel Heist</em>, <em>Child&rsquo;s Play</em>, <em>Headliners</em>, <em>VCIA Takedown</em> and <em>Operation Savage Glory</em>. These are the missable story trophies — do not skip them.</p>
-      </li>
-      <li>
-        <h3>Stage 2 — Strangers &amp; freaks <span class="stage-count">6 trophies</span></h3>
-        <p>Work through the stranger mission strands (question-mark markers): Andy, Kenton, Billy, Randy and Tyrone, finishing each one&rsquo;s final mission. Completing 8 full strands also earns <em>Strangers &amp; Freaks</em>. Do the finales before the story ends, while the strangers are still available.</p>
-      </li>
-      <li>
-        <h3>Stage 3 — Collectibles &amp; exploration <span class="stage-count">8 trophies</span></h3>
-        <p>Sweep Leonida region by region: meditation spots, card sets, WAiNK It locations, unique-animal hunting for Bret, 100 vehicles, exploring the whole state, all garage properties, and 10 Scooter Bros registrations. Nothing here is missable — it can all be done in free roam.</p>
-      </li>
-      <li>
-        <h3>Stage 4 — Activities &amp; challenges <span class="stage-count">26 trophies</span></h3>
-        <p>Races, drone races, the shooting range, fishing with Cal, arcade games, bowling, stunts, challenges, robberies, Combat Focus and the situational trophies (4-star escape with your partner, 3 shops back-to-back, the airport departure, the showroom smash). Do the situational ones deliberately — they need the right setup, not luck.</p>
-      </li>
-      <li>
-        <h3>Stage 5 — Cleanup &amp; 100% <span class="stage-count">2 trophies</span></h3>
-        <p>Finish whatever the checklist still shows, then check the in-game stats for 100% completion. <em>A Long Road</em> (100%) pops first; the platinum, <em>Vice Got a Price!</em>, follows automatically once the other 54 are earned.</p>
-      </li>
-    </ol>
-    <p class="missable-note"><strong>Missable trophies (22):</strong> the 12 named story missions and stranger finales, plus the situational ones — Hot Together, Retail Therapy, Catch Me If You Can, Sneakthief, A Classic Blitz Play, Capital Offense, Actions Speak Louder, Bad Luck I Guess, The Truth Is Out There and Ten Pin. Use the Missable filter to see them all.</p>
+    <p class="roadmap-intro">Do the stages in order. Stage 1 holds the only trophy that can be missed — finish it before leaving Chapter 1. Everything else can be done after the story.</p>
+    <div class="nextup" id="nextUp"></div>
+    <ol class="stages" id="stages"></ol>
+  </section>
+
+  <section class="sources-panel" id="sourcesPanel" aria-label="Sources">
+    <h2>Sources — every guide cites its sources</h2>
+    <p class="sources-intro">Nine sources, all read 20 Nov 2026. Every trophy cites at least two of them, and every step carries its citation inline. Where sources disagree, both versions are shown in the guide instead of picking one.</p>
+    <div id="sourcesList"></div>
   </section>
 
   <section class="about" aria-label="About this guide">
     <h2>About this guide</h2>
-    <p>Every trophy shows its official name, description and grade exactly as PlayStation publishes them. Each guide is written in our own words for this entry and names its source beside it, so you can check any specific location or step — a cited guide beats an uncited one, however detailed. The guide is a static site: it loads nothing from the network, your progress is saved only in this browser (localStorage), and export/import moves it as a file you own. No Rockstar Games logo, artwork or game screenshot is used anywhere; the look is our own.</p>
-    <p class="sources-note">Sources cited throughout: PowerPyx — GTA 6 Trophy Guide &amp; Roadmap; Exophase — GTA VI Trophies; PSNProfiles — GTA VI Trophies; TrueTrophies — GTA VI Trophies.</p>
+    <p>Every trophy shows its official name, description and grade exactly as PlayStation publishes them. Each guide is written in our own words for this entry as numbered steps, and every step names its source beside it, so you can check any specific location or step — a cited guide beats an uncited one, however detailed. Where a trigger is not yet known, the guide says so instead of guessing; where sources disagree, both versions are shown. The guide is a static site: it loads nothing from the network, your progress is saved only in this browser (localStorage), and export/import moves it as a file you own. No Rockstar Games logo, artwork or game screenshot is used anywhere; the look is our own.</p>
+    <p class="sources-note">Missable audit: 1 possibly missable (Positive Mental Attitude — the Chapter 1 balcony meditation), 6 watch (the stranger finales and the Criminal Profile choice), 6 unconfirmed (triggers not yet known), 2 with source disagreements shown. All 12 automatic story trophies are cleared — they unlock by playing and cannot be missed.</p>
   </section>
 </main>
 
